@@ -1,0 +1,23 @@
+<!doctype html>
+
+<style>
+    .dot { /* example */
+        height: 8px; width: 8px;
+        border-radius: 4px;
+        background: green;
+        position: absolute;
+    }
+</style>
+
+<script>
+    window.addEventListener("mousemove", event => {
+        let dot = document.createElement("div"); // create a div
+        dot.className = "dot"; // give the div the "dot" class
+        dot.style.left = (event.pageX - 4) + "px"; // give the dot's left property a location
+                                                   // based on the event's (mousedown) position
+        dot.style.top = (event.pageY - 4) + "px"; 
+        document.body.appendChild(dot); // Add the new div of class "dot" to the body of the doc
+    }) 
+    // TODO: Only paint dots if mouse button is held down!
+</script>
+
