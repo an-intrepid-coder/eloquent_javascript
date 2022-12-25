@@ -1,5 +1,14 @@
 <!doctype html>
 
+<style>
+    body {
+        background-color: black;
+    }
+    input[type="checkbox"]:checked {
+        accent-color: #41fc03;
+    }
+</style>
+
 <html>
     <head>
         <meta charset="utf-8">
@@ -10,7 +19,8 @@
             <table id="lifeGrid"></table>
         </div>
 
-        <label id="generationLabel">Generation: 0</label>
+        <label id="generationLabel" style="color: white"> Generation: 0 </label>
+        <button id="gliderGunButton"> Glider Gun! </label>
         <button id="resetButton" type="submit"> Reset </button>
         <button id="stopButton" type="submit"> Stop </button>
         <button id="clearButton" type="submit"> Clear </button>
@@ -148,20 +158,21 @@
 
             let animating = false;
 
+            // Update the text label with the current generation on it:
             function updateGenLabel() {
                 let generationLabel = document.getElementById("generationLabel");
                 generationLabel.textContent = `Generation ${lifeGrid.generation}`;
+                generationLabel.style = "color: white";
             }
 
+            // Advance the simulation by 1 generation, populate the DOM, and update the gen label:
             function advanceGen() {
-                // Advance generation by 1:
                 lifeGrid = lifeGrid.nextLifeGen();
-                // Repopulate table:
                 populateTable();
                 updateGenLabel();
             }
 
-
+            // Applies advanceGen() a given number of times:
             function multiGen(count, countLimit) {
                 let start = Date.now();
                 advanceGen();
@@ -177,25 +188,33 @@
 
             let nextButton = document.getElementById("nextButton");
             nextButton.addEventListener("mouseup", event => {
-                advanceGen();
+                if (!animating) {
+                    advanceGen();
+                }
             });
 
             let nextTenButton = document.getElementById("nextTenButton");
             nextTenButton.addEventListener("mouseup", event => {
-                animating = true;
-                multiGen(0, 10);
+                if (!animating) {
+                    animating = true;
+                    multiGen(0, 10);
+                }
             });
 
             let nextHundredButton = document.getElementById("nextHundredButton");
             nextHundredButton.addEventListener("mouseup", event => {
-                animating = true;
-                multiGen(0, 100);
+                if (!animating) {
+                    animating = true;
+                    multiGen(0, 100);
+                }
             });
 
             let nextThousandButton = document.getElementById("nextThousandButton");
             nextThousandButton.addEventListener("mouseup", event => {
-                animating = true;
-                multiGen(0, 1000);
+                if (!animating) {
+                    animating = true;
+                    multiGen(0, 1000);
+                }
             });
 
             // Button to stop any current animations:
@@ -225,6 +244,58 @@
                     updateGenLabel();
                 }, animationDelay);
             });
+
+            // Button to clear the grid and spawn a single glider gun:
+            /* Note: It will survive for about 200 turns before the wrapping universe causes the
+               gliders to collide with the gun, and the whole pattern remains alive for about 280
+               turns before settling to embers (with the current width/height).  */
+            let gliderGunButton = document.getElementById("gliderGunButton");
+            gliderGunButton.addEventListener("mouseup", event => {
+                animating = false;
+                setTimeout(() => {
+                    lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, false, true);
+                    let start = {x: 4, y: 9}
+                    lifeGrid.set(start.x, start.y, true);
+                    lifeGrid.set(start.x + 1, start.y, true);
+                    lifeGrid.set(start.x, start.y + 1, true);
+                    lifeGrid.set(start.x + 1, start.y + 1, true);
+                    lifeGrid.set(start.x + 10, start.y, true);
+                    lifeGrid.set(start.x + 10, start.y + 1, true);
+                    lifeGrid.set(start.x + 10, start.y + 2, true);
+                    lifeGrid.set(start.x + 11, start.y - 1, true);
+                    lifeGrid.set(start.x + 12, start.y - 2, true);
+                    lifeGrid.set(start.x + 13, start.y - 2, true);
+                    lifeGrid.set(start.x + 11, start.y + 3, true);
+                    lifeGrid.set(start.x + 12, start.y + 4, true);
+                    lifeGrid.set(start.x + 13, start.y + 4, true);
+                    lifeGrid.set(start.x + 14, start.y + 1, true);
+                    lifeGrid.set(start.x + 15, start.y - 1, true);
+                    lifeGrid.set(start.x + 15, start.y + 3, true);
+                    lifeGrid.set(start.x + 16, start.y, true);
+                    lifeGrid.set(start.x + 16, start.y + 1, true);
+                    lifeGrid.set(start.x + 16, start.y + 2, true);
+                    lifeGrid.set(start.x + 17, start.y + 1, true);
+                    lifeGrid.set(start.x + 20, start.y, true);
+                    lifeGrid.set(start.x + 21, start.y, true);
+                    lifeGrid.set(start.x + 20, start.y - 1, true);
+                    lifeGrid.set(start.x + 21, start.y - 1, true);
+                    lifeGrid.set(start.x + 20, start.y - 2, true);
+                    lifeGrid.set(start.x + 21, start.y - 2, true);
+                    lifeGrid.set(start.x + 22, start.y - 3, true);
+                    lifeGrid.set(start.x + 22, start.y + 1, true); 
+                    lifeGrid.set(start.x + 24, start.y - 3, true);
+                    lifeGrid.set(start.x + 24, start.y - 4, true);
+                    lifeGrid.set(start.x + 24, start.y + 1, true);
+                    lifeGrid.set(start.x + 24, start.y + 2, true); 
+                    lifeGrid.set(start.x + 34, start.y - 1, true); 
+                    lifeGrid.set(start.x + 34, start.y - 2, true); 
+                    lifeGrid.set(start.x + 35, start.y - 1, true); 
+                    lifeGrid.set(start.x + 35, start.y - 2, true); 
+                    populateTable();
+                    updateGenLabel();
+                }, animationDelay);
+            });
+
         </script>
     </body>
 </html>
