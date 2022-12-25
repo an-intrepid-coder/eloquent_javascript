@@ -10,6 +10,7 @@
             <table id="lifeGrid"></table>
         </div>
 
+        <label id="generationLabel">Generation: 0</label>
         <button id="resetButton" type="submit"> Reset </button>
         <button id="stopButton" type="submit"> Stop </button>
         <button id="clearButton" type="submit"> Clear </button>
@@ -25,6 +26,7 @@
 
             class LifeGrid {
                 constructor(width, height, fresh = true, blank = false) {
+                    this.generation = 0;
                     this.width = width;
                     this.height = height;
                     this.cells = []; // 1-dimensional array of bools in row-major order
@@ -101,6 +103,7 @@
                             newGrid.cells.push(cellLives);
                         }
                     }
+                    newGrid.generation = this.generation + 1;
                     return newGrid;
                 }
             }
@@ -145,11 +148,17 @@
 
             let animating = false;
 
+            function updateGenLabel() {
+                let generationLabel = document.getElementById("generationLabel");
+                generationLabel.textContent = `Generation ${lifeGrid.generation}`;
+            }
+
             function advanceGen() {
                 // Advance generation by 1:
                 lifeGrid = lifeGrid.nextLifeGen();
                 // Repopulate table:
                 populateTable();
+                updateGenLabel();
             }
 
 
@@ -202,6 +211,7 @@
                 setTimeout(() => {
                     lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, false, true);
                     populateTable();
+                    updateGenLabel();
                 }, animationDelay);
             });
 
@@ -212,9 +222,9 @@
                 setTimeout(() => {
                     lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, true);
                     populateTable();
+                    updateGenLabel();
                 }, animationDelay);
             });
-
         </script>
     </body>
 </html>

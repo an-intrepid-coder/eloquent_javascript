@@ -10,8 +10,9 @@
 * Update to use the canvas and be zoomable/scalable.
 * Buttons to control animation speed
 * Better page styling and colors (better yet, customizable)
+* Implement the optimization from Wikipedia that automatically skips cells it knows won't be updated.
 
 # BUGS:
 
-* Occasional inaccuracies can be observed when manually setting cells to alive/dead. For example, creating a fleet of Gliders after clearing the grid leads to many of them self-destructing rather than assuming the repeating pattern that is expected. Investigation ongoing.
+* Occasional inaccuracies can be observed when manually setting cells to alive/dead. For example, creating a fleet of Gliders after clearing the grid leads to many of them self-destructing rather than assuming the repeating pattern that is expected. Investigation ongoing. 
 
