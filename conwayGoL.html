@@ -1,0 +1,205 @@
+<!doctype html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Conway's Game of Life</title>
+    </head>
+    <body>
+        <div id="lifeDiv">
+            <table id="lifeGrid"></table>
+        </div>
+
+        <button id="stopButton" type="submit"> Stop </button>
+        <button id="clearButton" type="submit"> Clear </button>
+        <button id="nextButton" type="submit"> Next 1 </button>
+        <button id="nextTenButton" type="submit"> Next 10 </button>
+        <button id="nextHundredButton" type="submit"> Next 100 </button>
+        <button id="nextThousandButton" type="submit"> Next 1000 </button>
+
+        <script>
+            // Conway's Game of Life exercise from Chapter 18 of Eloquent JavaScript.
+            // TODO: Buttons to set grid to interesting known seeds, such as glider guns.
+            class LifeGrid {
+                // (TODO: implement Iterable interface for LifeGrid)
+                constructor(width, height, fresh = true, blank = false) {
+                    this.width = width;
+                    this.height = height;
+                    this.cells = []; // 1-dimensional array of bools in row-major order
+                    if (fresh) {
+                        for (let i = 0; i < width * height; i++) {
+                            let alive = Math.floor(Math.random() * 10) % 2 == 0;
+                            this.cells.push(alive);
+                        }
+                    } else if (blank) {
+                        for (let i = 0; i < width * height; i++) {
+                            this.cells.push(false);
+                        }
+                    }
+                }
+
+                // Gets the given cell:                
+                get(x, y) {
+                    if (y >= 0 && y < this.height && x >= 0 && x < this.width) {
+                        let i = y * this.width + x; // row * columns + column
+                        return this.cells[i];
+                    }
+                    return null; // should this be undefined or null? Does it matter?
+                }
+
+                // Sets the given cell and returns its new value:
+                set(x, y, aliveOrDead) {
+                    let i = y * this.width + x; // row * columns + column
+                    this.cells[i] = aliveOrDead;
+                    return this.cells[i];
+                }
+
+                // Returns the # of living neighbors of the cell at (x, y):
+                livingNeighbors(x, y) { 
+                    let count = 0;
+                    for (let i = y - 1; i < y + 2; i++) {
+                        for (let j = x - 1; j < x + 2; j++) { 
+                            if (!(j == x && i == y) && this.get(j, i) == true) { 
+                                count++;
+                            }
+                        }
+                    }
+                    return count;
+                }
+
+                // Returns true if the cell at (x, y) will live:
+                lives(x, y) { 
+                    let alive = this.get(x, y);
+                    let livingNeighborCount = this.livingNeighbors(x, y);
+                    if (alive) {
+                        return livingNeighborCount == 2 || livingNeighborCount == 3;
+                    } else {
+                        return livingNeighborCount == 3;
+                    }
+                }
+
+                // TODO: Wrapping toroid universe
+                nextLifeGen() { 
+                    // Generate and return a new LifeGrid:
+                    let newGrid = new LifeGrid(this.width, this.height, false);
+                    // ^ Maybe...
+                    //console.log(newGrid.cells.length);
+                    // So, that part is working. It should be an empty array when this begins:
+                    for (let y = 0; y < newGrid.height; y++) {
+                        for (let x = 0; x < newGrid.width; x++) {
+                            let cellLives = this.lives(x, y);
+                            newGrid.cells.push(cellLives);
+                        }
+                    }
+                    return newGrid;
+                }
+            }
+
+            // Generate grid:
+            let lifeGrid = new LifeGrid(50, 25);  // TODO: Variable height/width
+
+            // Populate DOM from lifeGrid:  
+            function populateTable() {
+                let lgtable = document.getElementById("lifeGrid"); 
+                let lifeDiv = document.getElementById("lifeDiv");
+                // Replace table element with new generated instance:
+                lgtable.remove(); 
+                lgtable = document.createElement("table");
+                lgtable.id = "lifeGrid";
+                for (let y = 0; y < lifeGrid.height; y++) {
+                    let row = document.createElement("tr");
+                    for (let x = 0; x < lifeGrid.width; x++) {
+                        let datum = document.createElement("td");
+                        let cell = document.createElement("label");
+                        let checkbox = document.createElement("input");
+                        checkbox.type = "checkbox";
+                        checkbox.checked = lifeGrid.get(x, y) ? true : false; 
+                        checkbox.x = x;
+                        checkbox.y = y; 
+                        checkbox.addEventListener("mouseup", event => {
+                            // Interacts with the LifeGrid object on mouseup
+                            let cellIsAlive = lifeGrid.get(checkbox.x, checkbox.y);
+                            lifeGrid.set(checkbox.x, checkbox.y, !cellIsAlive);
+                        });
+                        cell.appendChild(checkbox);
+                        datum.appendChild(cell);
+                        row.appendChild(datum);
+                    }
+                    lgtable.appendChild(row);
+                }
+                lifeDiv.appendChild(lgtable);
+            }
+
+            // Populate the DOM initially:
+            populateTable();
+
+            let animating = false;
+
+            function advanceGen() {
+                console.log("advanceGen()");
+                // Advance generation by 1:
+                lifeGrid = lifeGrid.nextLifeGen();
+                // Repopulate table:
+                populateTable();
+            }
+
+            // TODO: Back/Reverse functionality/buttons.
+
+            function multiGen(count, countLimit) {
+                let start = Date.now();
+                advanceGen();
+                count++;
+                if (count < countLimit && animating) {
+                    let end = Date.now();
+                    let dt = end - start;
+                    setTimeout(() => multiGen(count, countLimit), 500 - dt);
+                }
+            }
+
+            // Buttons to advance generations:
+
+            let nextButton = document.getElementById("nextButton");
+            nextButton.addEventListener("mouseup", event => {
+                advanceGen();
+            });
+
+            let nextTenButton = document.getElementById("nextTenButton");
+            nextTenButton.addEventListener("mouseup", event => {
+                animating = true;
+                multiGen(0, 10);
+            });
+
+            let nextHundredButton = document.getElementById("nextHundredButton");
+            nextHundredButton.addEventListener("mouseup", event => {
+                animating = true;
+                multiGen(0, 100);
+            });
+
+            let nextThousandButton = document.getElementById("nextThousandButton");
+            nextThousandButton.addEventListener("mouseup", event => {
+                animating = true;
+                multiGen(0, 1000);
+            });
+
+            // Button to stop any current animations:
+            let stopButton = document.getElementById("stopButton");
+            stopButton.addEventListener("mouseup", event => {
+                animating = false;
+            });
+
+            // Button to clear the grid:
+            let clearButton = document.getElementById("clearButton");
+            clearButton.addEventListener("mouseup", event => {
+                animating = false;
+                lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, false, true);
+                populateTable();
+            });
+
+            // TODO: Use localStorage to preserve on refresh/reload
+            // TODO: Some kind of unit testing. 
+            // TODO: Modularize into a proper web page using later book projects as a template
+            // TODO: Update to use the canvas and be zoomable/scalable.
+        </script>
+    </body>
+</html>
+

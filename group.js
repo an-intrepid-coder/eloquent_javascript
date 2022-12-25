@@ -20,7 +20,7 @@ class Group {
     }
 
     has(element) {  
-        /* TODO: Recursive deepEqual (this will only go one level deep).
+        /* TODO: Recursive deepEqual (as this one will only go one level deep).
            Will wait until I am familiar with the module system so I can
            just important the deepEqual solution.  */
         for (let item of this.contents) {
@@ -68,5 +68,5 @@ console.log(test.has(7), "\n");
 test = Group.from([{x: 1, y: 2}, {x: 1, y: 2}, {x: 0, y: 1}]);
 console.log(test);
 
-// TODO: GroupIterator (next, after recursive deepEqual)
+// TODO: GroupIterator 
 

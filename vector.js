@@ -1,8 +1,5 @@
 /* A mathematical vector class, from Eloquent JavaScript's exercises.  */
 
-// Might be useful in conjunction with the matrixes and a coordinate system,
-// for Roguelikes.
-
 class Vector {
     constructor(x, y) {
         this.x = x;

@@ -12,6 +12,3 @@ function countChar(s, c) {
     return count;
 }
 
-console.log(countChar("Sam", 'a'));
-console.log(countChar("SamSamSamSamSam", 'S'));
-

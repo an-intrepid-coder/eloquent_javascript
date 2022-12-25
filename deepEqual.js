@@ -5,8 +5,6 @@
 //       parsing arbitrary objects and JSON files probably.
 
 function deepEqual(a, b) {
-    // TODO -> this one next I think. Good little project for tomorrow morning after a run.
+    // TODO
 }
-
-// TODO: Apply this to Object.prototype by default on new Classes?
 

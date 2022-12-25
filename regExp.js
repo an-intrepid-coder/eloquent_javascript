@@ -1,2 +1,2 @@
-/* At some point I should do the regexp exercises in chapter 9. (TODO)  */
+/* Some of the RegExp exercises could be worth doing.  (TODO) */
 
