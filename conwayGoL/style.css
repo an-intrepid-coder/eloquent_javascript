@@ -1,0 +1,7 @@
+body {
+    background-color: black;
+}
+input[type="checkbox"]:checked {
+    accent-color: #41fc03;
+}
+
