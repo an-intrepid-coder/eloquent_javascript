@@ -115,12 +115,12 @@ function populateTable() {
             let checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.checked = lifeGrid.get(x, y) == true;
-            checkbox.x = x;
-            checkbox.y = y; 
-            checkbox.addEventListener("mouseup", event => {
+            cell.x = x;
+            cell.y = y; 
+            cell.addEventListener("mouseup", event => {
                 // Interacts with the LifeGrid object on mouseup
-                let cellIsAlive = lifeGrid.get(checkbox.x, checkbox.y);
-                lifeGrid.set(checkbox.x, checkbox.y, !cellIsAlive);
+                let cellIsAlive = lifeGrid.get(cell.x, cell.y);
+                lifeGrid.set(cell.x, cell.y, !cellIsAlive);
             });
             cell.appendChild(checkbox);
             datum.appendChild(cell);
@@ -226,9 +226,9 @@ resetButton.addEventListener("mouseup", event => {
 });
 
 /* Button to clear the grid and spawn 2 (for now) randomly-oriented gliders located 
-   semi-randomly within the grid.  */
-let spawnGliderButton = document.getElementById("spawnGliderButton");
-spawnGliderButton.addEventListener("mouseup", event => {
+   semi-randomly within the grid. Sometimes they collide, sometimes they don't.  */
+let duellingGlidersButton = document.getElementById("duellingGlidersButton");
+duellingGlidersButton.addEventListener("mouseup", event => {
     animating = false;
     setTimeout(() => {
         function getStartingPoints() {
