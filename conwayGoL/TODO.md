@@ -12,6 +12,7 @@
 * A little more styling.
 * Update to use the canvas <-- Soon!
 * Zoomable/Scaleable
+* Allow user to change color of background and cells
 * Buttons to control animation speed
 * Implement the optimization from Wikipedia that automatically skips cells it knows won't be updated.
 
