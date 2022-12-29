@@ -10,7 +10,7 @@ let canvas = document.querySelector("canvas");
 let context = canvas.getContext("2d");
 
 // Cell grid dimensions (TODO: let the user adjust it by zooming)
-let cellSize = 16;
+let cellSize = 4;
 let cellsHigh = Math.floor(canvas.height / cellSize);
 let cellsWide = Math.floor(canvas.width / cellSize);
 
@@ -69,7 +69,7 @@ populateTable();
 // Update the text label with the current generation on it:
 function updateGenLabel() {
     let generationLabel = document.getElementById("generationLabel");
-    generationLabel.textContent = `Generation ${lifeGrid.generation}`;
+    generationLabel.textContent = `| Generation ${lifeGrid.generation}`;
     generationLabel.style = "color: white";
 }
 
@@ -99,6 +99,14 @@ function multiGen(count, countLimit) {
 
 // Buttons to advance generations:
 
+let playButton = document.getElementById("playButton");
+playButton.addEventListener("mouseup", event => {
+    if (!animating) {
+        animating = true;
+        multiGen(1, Infinity);
+    }
+});
+
 let nextButton = document.getElementById("nextButton");
 nextButton.addEventListener("mouseup", event => {
     if (!animating) {
@@ -106,27 +114,17 @@ nextButton.addEventListener("mouseup", event => {
     }
 });
 
-let nextTenButton = document.getElementById("nextTenButton");
-nextTenButton.addEventListener("mouseup", event => {
+let nextXButton = document.getElementById("nextXButton");
+nextXButton.addEventListener("mouseup", event => {
     if (!animating) {
-        animating = true;
-        multiGen(1, 10);
-    }
-});
-
-let nextHundredButton = document.getElementById("nextHundredButton");
-nextHundredButton.addEventListener("mouseup", event => {
-    if (!animating) {
-        animating = true;
-        multiGen(1, 100);
-    }
-});
-
-let nextThousandButton = document.getElementById("nextThousandButton");
-nextThousandButton.addEventListener("mouseup", event => {
-    if (!animating) {
-        animating = true;
-        multiGen(1, 1000);
+        let gens = Number(prompt("Enter # of generations: "));
+        //alert(gens);
+        if (String(gens) == "NaN") {
+            alert("Please enter a number!");
+        } else {
+            animating = true;
+            multiGen(1, gens); 
+        }
     }
 });
 
