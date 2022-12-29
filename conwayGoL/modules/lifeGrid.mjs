@@ -1,3 +1,5 @@
+import {randomIndex} from "./utility.mjs";
+
 export class LifeGrid {
     constructor(width, height, fresh = true, blank = false) {
         this.generation = 0;
@@ -68,8 +70,8 @@ export class LifeGrid {
         }
     }
 
+    // Generate and return a new LifeGrid based on the previous state:
     nextLifeGen() { 
-        // Generate and return a new LifeGrid:
         let newGrid = new LifeGrid(this.width, this.height, false);
         for (let y = 0; y < newGrid.height; y++) {
             for (let x = 0; x < newGrid.width; x++) {
@@ -80,5 +82,96 @@ export class LifeGrid {
         newGrid.generation = this.generation + 1;
         return newGrid;
     }
+
+    // Stamp a Glider in to a given spot:
+    stampGlider(origin, orientation, configuration = null) {
+        // TODO: Different starting frames
+        // TODO: More refactoring: these sub-functions can be a scope out
+        /* Returns the coordinates of the filled edge of the Glider based on 
+           the given orientation and starting top-left point of the 3x3 space.  */
+        function edge() { 
+            if (orientation === "north") {
+                return [
+                    origin,
+                    {x: origin.x + 1, y: origin.y},
+                    {x: origin.x + 2, y: origin.y}
+                ];
+            } else if (orientation === "south") {
+                return [
+                    {x: origin.x, y: origin.y + 2},
+                    {x: origin.x + 1, y: origin.y + 2},
+                    {x: origin.x + 2, y: origin.y + 2}
+                ];
+            } else if (orientation === "east") {
+                return [
+                    {x: origin.x + 2, y: origin.y},
+                    {x: origin.x + 2, y: origin.y + 1},
+                    {x: origin.x + 2, y: origin.y + 2}
+                ];
+            } else if (orientation === "west") {
+                return [
+                    origin,
+                    {x: origin.x, y: origin.y + 1},
+                    {x: origin.x, y: origin.y + 2}
+                ];
+            }
+        }
+
+        /* Returns the central rear point of the Glider given the origin and 
+           orientation.  */
+        function centralRearPoint() {
+            if (orientation == "north") {
+                return {x: origin.x + 1, y: origin.y + 2};
+            } else if (orientation == "south") {
+                return {x: origin.x + 1, y: origin.y};
+            } else if (orientation == "east") {
+                return {x: origin.x, y: origin.y + 1};
+            } else if (orientation == "west") {
+                return {x: origin.x + 2, y: origin.y + 1};
+            }
+        }
+
+        /* Returns the middle-offset point of the Glider given the origin and 
+           orientation. if configuration == null then it will randomly pick the middle offset
+           point, otherwise it will select from 0, or 1 statically.  */
+        function middleOffsetPoint(configuration = null) {
+            let candidates;
+            if (orientation == "north") {
+                candidates = [ 
+                    {x: origin.x, y: origin.y + 1},
+                    {x: origin.x + 2, y: origin.y + 1}
+                ];
+            } else if (orientation == "south") {
+                candidates = [ 
+                    {x: origin.x, y: origin.y + 1},
+                    {x: origin.x + 2, y: origin.y + 1}
+                ];
+            } else if (orientation == "east") {
+                candidates = [ 
+                    {x: origin.x + 1, y: origin.y},
+                    {x: origin.x + 1, y: origin.y + 2}
+                ];
+            } else if (orientation == "west") {
+                candidates = [ 
+                    {x: origin.x + 1, y: origin.y},
+                    {x: origin.x + 1, y: origin.y + 2}
+                ];
+            }
+            if (configuration == 0 || configuration == 1) return candidates[configuration];
+            else return randomIndex(candidates);
+        }
+
+        let glider = [];
+        let edgePoints = edge();
+        for (let point of edgePoints) { 
+            glider.push(point);
+        }
+        glider.push(centralRearPoint()); 
+        glider.push(middleOffsetPoint(configuration));
+        for (let cell of glider) { 
+            this.set(cell.x, cell.y, true);
+        }
+    }
+
 }
 

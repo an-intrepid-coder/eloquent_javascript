@@ -1,3 +1,5 @@
+/* The File Server implemented in chapter 20 of Eloquent JavaScript.  */
+
 const {createServer} = require("http");
 const {parse} = require("url");
 const {resolve, sep} = require("path");

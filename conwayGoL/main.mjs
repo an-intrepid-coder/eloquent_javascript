@@ -133,6 +133,47 @@ resetButton.addEventListener("mouseup", event => {
     }, animationDelay);
 });
 
+/* Button to produce a fleet of gliders in formation, to endlessly fly across the grid.  */
+let gliderFleetButton = document.getElementById("gliderFleetButton");
+gliderFleetButton.addEventListener("mouseup", event => {
+    animating = false;
+    setTimeout(() => {
+        lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, false, true);
+        let orientations = ["north", "south", "east", "west"];
+        let fleetOrientation = randomIndex(orientations);
+        let fleetConfiguration = Math.floor(Math.random() * 2);
+        let origin = {x: 0, y: 0};
+        const numGliders = 45;
+
+        /* Checks a 5x5 square based on the current origin for any living cells and returns false if 
+           it finds any. Returns true otherwise.  */
+        function checkSquare() {
+            for (let y = origin.y; y < origin.y + 5; y++) {
+                for (let x = origin.x; x < origin.x + 5; x++) {
+                    let ty = y;
+                    let tx = x;
+                    if (ty < 0 || ty >= lifeGrid.height) ty *= -1;
+                    if (tx < 0 || tx >= lifeGrid.width) tx *= -1;
+                    if (lifeGrid.get(tx, ty) == true) return false;
+                }
+            }
+            return true;
+        }
+
+        for (let i = 0; i < numGliders; i++) {  // TODO: Fix -- it's close
+            if (!checkSquare()) break;
+            let gliderOrigin = {x: origin.x + 1, y: origin.y + 1};
+            lifeGrid.stampGlider(gliderOrigin, fleetOrientation, fleetConfiguration);
+            origin = {x: origin.x + 5, y: origin.y};
+            if (origin.x + 5 >= lifeGrid.width - 1) {
+                origin = {x: 0, y: origin.y + 5};
+            }
+        }
+        populateTable();
+        updateGenLabel();
+    }, animationDelay);
+});
+
 /* Button to clear the grid and spawn 2 (for now) randomly-oriented gliders located 
    semi-randomly within the grid. Sometimes they collide, sometimes they don't.  */
 let duellingGlidersButton = document.getElementById("duellingGlidersButton");
@@ -163,104 +204,13 @@ duellingGlidersButton.addEventListener("mouseup", event => {
             return points;
         }
 
-        /* Each point represents the top-left point in a 3x3 grid, each of which will
-           contain a randomly-oriented glider.  */
-        function paintGliders(points, lg) {
-            // TODO: Different starting frames
-            let orientations = ["north", "south", "east", "west"];
-            
-            /* Returns the coordinates of the filled edge of the Glider based on 
-               the given orientation and starting top-left point of the 3x3 space.  */
-            function edge(origin, orientation) { 
-                if (orientation == "north") {
-                    return [
-                        origin,
-                        {x: origin.x + 1, y: origin.y},
-                        {x: origin.x + 2, y: origin.y}
-                    ];
-                } else if (orientation == "south") {
-                    return [
-                        {x: origin.x, y: origin.y + 2},
-                        {x: origin.x + 1, y: origin.y + 2},
-                        {x: origin.x + 2, y: origin.y + 2}
-                    ];
-                } else if (orientation == "east") {
-                    return [
-                        {x: origin.x + 2, y: origin.y},
-                        {x: origin.x + 2, y: origin.y + 1},
-                        {x: origin.x + 2, y: origin.y + 2}
-                    ];
-                } else if (orientation == "west") {
-                    return [
-                        origin,
-                        {x: origin.x, y: origin.y + 1},
-                        {x: origin.x, y: origin.y + 2}
-                    ];
-                }
-            }
-
-            /* Returns the central rear point of the Glider given the origin and 
-               orientation.  */
-            function centralRearPoint(origin, orientation) {
-                if (orientation == "north") {
-                    return {x: origin.x + 1, y: origin.y + 2};
-                } else if (orientation == "south") {
-                    return {x: origin.x + 1, y: origin.y};
-                } else if (orientation == "east") {
-                    return {x: origin.x, y: origin.y + 1};
-                } else if (orientation == "west") {
-                    return {x: origin.x + 2, y: origin.y + 1};
-                }
-            }
-
-            /* Returns the middle-offset point of the Glider given the origin and 
-               orientation.  */
-            function middleOffsetPoint(origin, orientation) {
-                if (orientation == "north") {
-                    let candidates = [ 
-                        {x: origin.x, y: origin.y + 1},
-                        {x: origin.x + 2, y: origin.y + 1}
-                    ];
-                    return randomIndex(candidates);
-                } else if (orientation == "south") {
-                    let candidates = [ 
-                        {x: origin.x, y: origin.y + 1},
-                        {x: origin.x + 2, y: origin.y + 1}
-                    ];
-                    return randomIndex(candidates);
-                } else if (orientation == "east") {
-                    let candidates = [ 
-                        {x: origin.x + 1, y: origin.y},
-                        {x: origin.x + 1, y: origin.y + 2}
-                    ];
-                    return randomIndex(candidates);
-                } else if (orientation == "west") {
-                    let candidates = [ 
-                        {x: origin.x + 1, y: origin.y},
-                        {x: origin.x + 1, y: origin.y + 2}
-                    ];
-                    return randomIndex(candidates);
-                }
-            }
-
-            for (let point of points) { 
-                let glider = [];
-                let orientation = randomIndex(orientations);
-                let edgePoints = edge(point, orientation);
-                for (let edgePoint of edgePoints) { 
-                    glider.push(edgePoint);
-                }
-                glider.push(centralRearPoint(point, orientation)); 
-                glider.push(middleOffsetPoint(point, orientation));
-                for (let cell of glider) { 
-                    lifeGrid.set(cell.x, cell.y, true);
-                }
-            }
-        }
-
         lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, false, true);
+        let orientations = ["north", "south", "east", "west"];
         let points = getStartingPoints();
-        paintGliders(points, lifeGrid); 
+        for (let point of points) { 
+            let orientation = randomIndex(orientations);
+            lifeGrid.stampGlider(point, orientation);
+        }
         populateTable();
         updateGenLabel();
     }, animationDelay);
