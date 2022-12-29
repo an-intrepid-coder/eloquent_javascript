@@ -1,48 +1,70 @@
-// Conway's Game of Life exercise from Chapter 18 of Eloquent JavaScript.
+/* Conway's Game of Life exercise from Chapter 18 (page 330) of Eloquent JavaScript. I just took the
+   exercise and ran with it here, and now it's a whole project of its own.  */
 
 import {randInRange, randomIndex} from "./modules/utility.mjs";
 import {LifeGrid} from "./modules/lifeGrid.mjs";
-import {animationDelay} from "./modules/constants.mjs";
+import {ANIMATION_DELAY, LIGHT_GREEN} from "./modules/constants.mjs";
+
+// canvas:
+let canvas = document.querySelector("canvas");
+let context = canvas.getContext("2d");
+
+// Cell grid dimensions (TODO: let the user adjust it by zooming)
+let cellSize = 16;
+let cellsHigh = Math.floor(canvas.height / cellSize);
+let cellsWide = Math.floor(canvas.width / cellSize);
+
+// Cell grid colors: (TODO: let user adjust)
+let bg_color = "black";
+let cellColor = LIGHT_GREEN;
+
+let animating = false;
+
+let togglingEnabled = false;
 
 // Generate grid:
-let lifeGrid = new LifeGrid(50, 25);  
+let lifeGrid = new LifeGrid(cellsWide, cellsHigh);  
 
-// Populate DOM from lifeGrid:  
-function populateTable() {
-    let lgtable = document.getElementById("lifeGrid"); 
-    let lifeDiv = document.getElementById("lifeDiv");
-    // Replace table element with new generated instance:
-    lgtable.remove(); 
-    lgtable = document.createElement("table");
-    lgtable.id = "lifeGrid";
-    for (let y = 0; y < lifeGrid.height; y++) {
-        let row = document.createElement("tr");
-        for (let x = 0; x < lifeGrid.width; x++) {
-            let datum = document.createElement("td");
-            let cell = document.createElement("label");
-            let checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.checked = lifeGrid.get(x, y) == true;
-            cell.x = x;
-            cell.y = y; 
-            cell.addEventListener("mouseup", event => {
-                // Interacts with the LifeGrid object on mouseup
-                let cellIsAlive = lifeGrid.get(cell.x, cell.y);
-                lifeGrid.set(cell.x, cell.y, !cellIsAlive);
-            });
-            cell.appendChild(checkbox);
-            datum.appendChild(cell);
-            row.appendChild(datum);
-        }
-        lgtable.appendChild(row);
+// Canvas functions:
+
+// Manual cell toggling on canvas click (when enabled):
+canvas.addEventListener("mouseup", event => { 
+    /* Manually toggle clicked cells */      
+    let canvasRect = canvas.getBoundingClientRect();
+    let x = event.pageX - canvasRect.left;
+    let y = event.pageY - canvasRect.top;
+    if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height && !animating && togglingEnabled) {
+        let cell = {x: Math.floor(x / cellSize), y: Math.floor(y / cellSize)};
+        let cellState = lifeGrid.get(cell.x, cell.y);
+        lifeGrid.set(cell.x, cell.y, !cellState);
+        populateTable();
     }
-    lifeDiv.appendChild(lgtable);
+});
+
+// Fills in the whole background with the given color:
+function fillBackground(color) {
+    context.fillStyle = color; 
+    context.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+// Fills in a given cell with the given color:
+function fillCell(x, y, color) {
+    context.fillStyle = color;
+    context.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+}
+
+// Populate canvas from lifeGrid:  
+function populateTable() {
+    fillBackground(bg_color);
+    for (let y = 0; y < cellsHigh; y++) {
+        for (let x = 0; x < cellsWide; x++) {
+            if (lifeGrid.get(x, y) == true) fillCell(x, y, cellColor);
+        }
+    }
 }
 
 // Populate the DOM initially:
 populateTable();
-
-let animating = false;
 
 // Update the text label with the current generation on it:
 function updateGenLabel() {
@@ -62,11 +84,14 @@ function advanceGen() {
 function multiGen(count, countLimit) {
     let start = Date.now();
     advanceGen();
-    count++;
     if (count < countLimit && animating) {
-        let end = Date.now();
-        let dt = end - start;
-        setTimeout(() => multiGen(count, countLimit), animationDelay - dt);
+        requestAnimationFrame(_ => {
+            let end = Date.now();
+            let dt = end - start;
+            setTimeout(() => {
+                multiGen(count + 1, countLimit);
+            }, ANIMATION_DELAY - dt);
+        });
     } else {
         animating = false;
     }
@@ -85,7 +110,7 @@ let nextTenButton = document.getElementById("nextTenButton");
 nextTenButton.addEventListener("mouseup", event => {
     if (!animating) {
         animating = true;
-        multiGen(0, 10);
+        multiGen(1, 10);
     }
 });
 
@@ -93,7 +118,7 @@ let nextHundredButton = document.getElementById("nextHundredButton");
 nextHundredButton.addEventListener("mouseup", event => {
     if (!animating) {
         animating = true;
-        multiGen(0, 100);
+        multiGen(1, 100);
     }
 });
 
@@ -101,8 +126,14 @@ let nextThousandButton = document.getElementById("nextThousandButton");
 nextThousandButton.addEventListener("mouseup", event => {
     if (!animating) {
         animating = true;
-        multiGen(0, 1000);
+        multiGen(1, 1000);
     }
+});
+
+// Button to enable/disable manual cell toggling
+let manualToggle = document.getElementById("manualToggle");
+manualToggle.addEventListener("mouseup", event => {
+    togglingEnabled = !togglingEnabled;
 });
 
 // Button to stop any current animations:
@@ -119,7 +150,7 @@ clearButton.addEventListener("mouseup", event => {
         lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, false, true);
         populateTable();
         updateGenLabel();
-    }, animationDelay);
+    }, ANIMATION_DELAY);
 });
 
 // Button to reset the grid:
@@ -130,7 +161,7 @@ resetButton.addEventListener("mouseup", event => {
         lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, true);
         populateTable();
         updateGenLabel();
-    }, animationDelay);
+    }, ANIMATION_DELAY);
 });
 
 /* Button to produce a fleet of gliders in formation, to endlessly fly across the grid.  */
@@ -171,7 +202,7 @@ gliderFleetButton.addEventListener("mouseup", event => {
         }
         populateTable();
         updateGenLabel();
-    }, animationDelay);
+    }, ANIMATION_DELAY);
 });
 
 /* Button to clear the grid and spawn 2 (for now) randomly-oriented gliders located 
@@ -213,13 +244,10 @@ duellingGlidersButton.addEventListener("mouseup", event => {
         }
         populateTable();
         updateGenLabel();
-    }, animationDelay);
+    }, ANIMATION_DELAY);
 });
 
 // Button to clear the grid and spawn a single glider gun:
-/* Note: It will survive for about 200 turns before the wrapping universe causes the
-   gliders to collide with the gun, and the whole pattern remains alive for about 280
-   turns before settling to embers (with the current width/height).  */
 let gliderGunButton = document.getElementById("gliderGunButton");
 gliderGunButton.addEventListener("mouseup", event => {
     animating = false;
@@ -264,6 +292,6 @@ gliderGunButton.addEventListener("mouseup", event => {
         lifeGrid.set(start.x + 35, start.y - 2, true); 
         populateTable();
         updateGenLabel();
-    }, animationDelay);
+    }, ANIMATION_DELAY);
 });
 
