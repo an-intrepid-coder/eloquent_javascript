@@ -1,9 +1,8 @@
 # TODO list for web-based Conway's Game of Life (in no particular order):
 
-* Dynamic initial canvas size based on user's screen
-
 * FINISH Glider Fleet: It should loop over #cells dynamically and randomly on/off each glider-size square of cells w/ buffer (so 5x5 cells per super-cell)
 
+* Preserve state when scale is changed
 * color picker instead of calls to prompt() for BG/FG Color buttons
 * Sliders for speed/scale instead of buttons
 * Implement the optimization from Wikipedia that automatically skips cells it knows won't be updated.

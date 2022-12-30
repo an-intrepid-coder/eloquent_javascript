@@ -7,6 +7,8 @@ import {ANIMATION_DELAY, LIGHT_BROWN} from "./modules/constants.mjs";
 
 // canvas:
 let canvas = document.querySelector("canvas");
+canvas.width =  window.innerWidth - 10;
+canvas.height =  window.innerHeight - 100;
 let context = canvas.getContext("2d");
 
 // Cell grid dimensions 
@@ -172,6 +174,17 @@ nextXButton.addEventListener("mouseup", event => {
     }
 });
 
+/* Re-scales the canvas based on the window size and 
+   then adjusts the scale of the cells using a given
+   cell edge length as an argument.  */
+function reScale(newScale) {
+    canvas.width =  window.innerWidth - 10;
+    canvas.height =  window.innerHeight - 100;
+    cellSize = newScale;
+    cellsHigh = Math.floor(canvas.height / cellSize);
+    cellsWide = Math.floor(canvas.width / cellSize);
+}
+
 // Button to change pixels-per-cell Scale:
 let scaleButton = document.getElementById("scaleButton");
 scaleButton.addEventListener("mouseup", event => {
@@ -180,9 +193,7 @@ scaleButton.addEventListener("mouseup", event => {
         if (newScale == null || newScale < 1 || newScale > 32) {
             alert("Invalid input!");
         } else {
-            cellSize = newScale;
-            cellsHigh = Math.floor(canvas.height / cellSize);
-            cellsWide = Math.floor(canvas.width / cellSize);
+            reScale(newScale);
             animating = false;
             lifeGrid = new LifeGrid(cellsWide, cellsHigh);  
             populateCanvas();
@@ -298,6 +309,7 @@ let resetButton = document.getElementById("resetButton");
 resetButton.addEventListener("mouseup", event => {
     animating = false;
     setTimeout(() => {
+        reScale(cellSize);
         lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, true);
         populateCanvas();
         updateGenLabel();
