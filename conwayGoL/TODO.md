@@ -1,12 +1,15 @@
 # TODO list for web-based Conway's Game of Life (in no particular order):
 
-* Party mode
-* Zoomable/Scaleable
-* Speed slider and/or buttons
-* Stones mode
-* FINISH Glider Fleet: It should loop over #cells dynamically and randomly on/off each glider-size square of cells w/ buffer (so 5x5 cells per super-cell)
-* Allow user to change color of background and cells
+* Zoomable/Scaleable buttons
+* Speed slider buttons
 
+* Party mode
+* Stones mode
+
+* FINISH Glider Fleet: It should loop over #cells dynamically and randomly on/off each glider-size square of cells w/ buffer (so 5x5 cells per super-cell)
+
+* color picker instead of calls to prompt() for BG/FG Color buttons
+* Sliders for speed/scale instead of buttons
 * Implement the optimization from Wikipedia that automatically skips cells it knows won't be updated.
 * Dynamic initial canvas size based on user's screen
 * click-and-drag toggling of multiple cells

@@ -8,3 +8,13 @@ export function randInRange(start, end) {
     return Math.floor(Math.random() * (end - start)) + start;
 }
 
+// Takes a user prompt and checks that it is a number before returning it:
+export function promptForNumber(promptString) {
+    let input = Number(prompt(promptString));
+    if (String(input) === "NaN") {
+        alert("Please enter a number!");
+        return null;
+    } 
+    return input;
+}
+

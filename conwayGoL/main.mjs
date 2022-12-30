@@ -1,7 +1,7 @@
 /* Conway's Game of Life exercise from Chapter 18 (page 330) of Eloquent JavaScript. I just took the
    exercise and ran with it here, and now it's a whole project of its own.  */
 
-import {randInRange, randomIndex} from "./modules/utility.mjs";
+import {randInRange, randomIndex, promptForNumber} from "./modules/utility.mjs";
 import {LifeGrid} from "./modules/lifeGrid.mjs";
 import {ANIMATION_DELAY, LIGHT_GREEN} from "./modules/constants.mjs";
 
@@ -37,7 +37,7 @@ canvas.addEventListener("mouseup", event => {
         let cell = {x: Math.floor(x / cellSize), y: Math.floor(y / cellSize)};
         let cellState = lifeGrid.get(cell.x, cell.y);
         lifeGrid.set(cell.x, cell.y, !cellState);
-        populateTable();
+        populateCanvas();
     }
 });
 
@@ -54,7 +54,7 @@ function fillCell(x, y, color) {
 }
 
 // Populate canvas from lifeGrid:  
-function populateTable() {
+function populateCanvas() {
     fillBackground(bg_color);
     for (let y = 0; y < cellsHigh; y++) {
         for (let x = 0; x < cellsWide; x++) {
@@ -64,7 +64,7 @@ function populateTable() {
 }
 
 // Populate the DOM initially:
-populateTable();
+populateCanvas();
 
 // Update the text label with the current generation on it:
 function updateGenLabel() {
@@ -76,7 +76,7 @@ function updateGenLabel() {
 // Advance the simulation by 1 generation, populate the DOM, and update the gen label:
 function advanceGen() {
     lifeGrid = lifeGrid.nextLifeGen();
-    populateTable();
+    populateCanvas();
     updateGenLabel();
 }
 
@@ -117,15 +117,44 @@ nextButton.addEventListener("mouseup", event => {
 let nextXButton = document.getElementById("nextXButton");
 nextXButton.addEventListener("mouseup", event => {
     if (!animating) {
-        let gens = Number(prompt("Enter # of generations: "));
-        //alert(gens);
-        if (String(gens) == "NaN") {
-            alert("Please enter a number!");
-        } else {
+        let gens = promptForNumber("Enter the # of generations: ");
+        if (gens != null) {
             animating = true;
             multiGen(1, gens); 
         }
     }
+});
+
+// Buttons to change foreground and background colors on the grid:
+
+let changeBgButton = document.getElementById("changeBgButton");
+changeBgButton.addEventListener("mouseup", event => {
+    let r = promptForNumber("Enter RED rgb value between 0-255: ");
+    let g = promptForNumber("Enter GREEN rgb value between 0-255: ");
+    let b = promptForNumber("Enter BLUE rgb value between 0-255: ");
+    for (let num of [r, g, b]) {
+        if (num < 0 || num > 255) {
+            alert("Please enter values between 0-255");
+            return;
+        }
+    }
+    bg_color = `rgb(${r}, ${g}, ${b})`;
+    populateCanvas();
+});
+
+let changeFgButton = document.getElementById("changeFgButton");
+changeFgButton.addEventListener("mouseup", event => {
+    let r = promptForNumber("Enter RED rgb value between 0-255: ");
+    let g = promptForNumber("Enter GREEN rgb value between 0-255: ");
+    let b = promptForNumber("Enter BLUE rgb value between 0-255: ");
+    for (let num of [r, g, b]) {
+        if (num < 0 || num > 255) {
+            alert("Please enter values between 0-255");
+            return;
+        }
+    }
+    cellColor = `rgb(${r}, ${g}, ${b})`;
+    populateCanvas();
 });
 
 // Button to enable/disable manual cell toggling
@@ -146,7 +175,7 @@ clearButton.addEventListener("mouseup", event => {
     animating = false;
     setTimeout(() => {
         lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, false, true);
-        populateTable();
+        populateCanvas();
         updateGenLabel();
     }, ANIMATION_DELAY);
 });
@@ -157,7 +186,7 @@ resetButton.addEventListener("mouseup", event => {
     animating = false;
     setTimeout(() => {
         lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, true);
-        populateTable();
+        populateCanvas();
         updateGenLabel();
     }, ANIMATION_DELAY);
 });
@@ -198,7 +227,7 @@ gliderFleetButton.addEventListener("mouseup", event => {
                 origin = {x: 0, y: origin.y + 5};
             }
         }
-        populateTable();
+        populateCanvas();
         updateGenLabel();
     }, ANIMATION_DELAY);
 });
@@ -240,7 +269,7 @@ duellingGlidersButton.addEventListener("mouseup", event => {
             let orientation = randomIndex(orientations);
             lifeGrid.stampGlider(point, orientation);
         }
-        populateTable();
+        populateCanvas();
         updateGenLabel();
     }, ANIMATION_DELAY);
 });
@@ -288,7 +317,7 @@ gliderGunButton.addEventListener("mouseup", event => {
         lifeGrid.set(start.x + 34, start.y - 2, true); 
         lifeGrid.set(start.x + 35, start.y - 1, true); 
         lifeGrid.set(start.x + 35, start.y - 2, true); 
-        populateTable();
+        populateCanvas();
         updateGenLabel();
     }, ANIMATION_DELAY);
 });
