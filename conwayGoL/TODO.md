@@ -1,7 +1,5 @@
 # TODO list for web-based Conway's Game of Life (in no particular order):
 
-* FINISH Glider Fleet: It should loop over #cells dynamically and randomly on/off each glider-size square of cells w/ buffer (so 5x5 cells per super-cell)
-
 * Preserve state when scale is changed
 * color picker instead of calls to prompt() for BG/FG Color buttons
 * Sliders for speed/scale instead of buttons
@@ -11,7 +9,7 @@
 * Button for **fleets** of duelling gliders 
 * user input # for duelling gliders.
 * implement Iterable interface for LifeGrid)
-* Back/Reverse functionality/buttons (how far back? to be determined)
+* Back/Reverse functionality/buttons (all the way back probably, via saved seed states)
 * Use localStorage to preserve state on refresh/reload
 * Some kind of unit testing. 
 * Make into a proper web page using later book projects as a template

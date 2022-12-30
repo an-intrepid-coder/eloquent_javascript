@@ -325,31 +325,13 @@ gliderFleetButton.addEventListener("mouseup", event => {
         let orientations = ["north", "south", "east", "west"];
         let fleetOrientation = randomIndex(orientations);
         let fleetConfiguration = Math.floor(Math.random() * 2);
-        let origin = {x: 0, y: 0};
-        const numGliders = 45;
-
-        /* Checks a 5x5 square based on the current origin for any living cells and returns false if 
-           it finds any. Returns true otherwise.  */
-        function checkSquare() {
-            for (let y = origin.y; y < origin.y + 5; y++) {
-                for (let x = origin.x; x < origin.x + 5; x++) {
-                    let ty = y;
-                    let tx = x;
-                    if (ty < 0 || ty >= lifeGrid.height) ty *= -1;
-                    if (tx < 0 || tx >= lifeGrid.width) tx *= -1;
-                    if (lifeGrid.get(tx, ty) == true) return false;
-                }
-            }
-            return true;
-        }
-
-        for (let i = 0; i < numGliders; i++) {  // TODO: Fix -- it's close
-            if (!checkSquare()) break;
-            let gliderOrigin = {x: origin.x + 1, y: origin.y + 1};
-            lifeGrid.stampGlider(gliderOrigin, fleetOrientation, fleetConfiguration);
-            origin = {x: origin.x + 5, y: origin.y};
-            if (origin.x + 5 >= lifeGrid.width - 1) {
-                origin = {x: 0, y: origin.y + 5};
+        let superCellSize = 5;
+        let superCellsWide = Math.floor(cellsWide / superCellSize);
+        let superCellsHigh = Math.floor(cellsHigh / superCellSize);
+        for (let y = 0; y < superCellsHigh; y++) {  
+            for (let x = 0; x < superCellsWide; x++) {
+                let gliderOrigin = {x: x * superCellSize + 1, y: y * superCellSize + 1};
+                lifeGrid.stampGlider(gliderOrigin, fleetOrientation, fleetConfiguration);
             }
         }
         populateCanvas();
