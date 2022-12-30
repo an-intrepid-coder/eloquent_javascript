@@ -1,9 +1,5 @@
 # TODO list for web-based Conway's Game of Life (in no particular order):
 
-* Zoomable/Scaleable buttons
-* Speed slider buttons
-
-* Party toggle
 * Stones toggle
 
 * FINISH Glider Fleet: It should loop over #cells dynamically and randomly on/off each glider-size square of cells w/ buffer (so 5x5 cells per super-cell)
@@ -25,4 +21,6 @@
 * auto-detect when the sim is at or close to its finished state (including checks for long-period oscillators)
 
 # BUGS:
+
+* Handle cancelled prompts more cleanly
 

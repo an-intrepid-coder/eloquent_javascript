@@ -15,9 +15,11 @@ let cellsHigh = Math.floor(canvas.height / cellSize);
 let cellsWide = Math.floor(canvas.width / cellSize);
 
 // Cell grid colors: 
+let partyMode = false;
 let bg_color = "black";
 let cellColor = randomBrightColor();
 
+let animationDelay = ANIMATION_DELAY;
 let animating = false;
 
 let togglingEnabled = false;
@@ -58,7 +60,8 @@ function populateCanvas() {
     fillBackground(bg_color);
     for (let y = 0; y < cellsHigh; y++) {
         for (let x = 0; x < cellsWide; x++) {
-            if (lifeGrid.get(x, y) == true) fillCell(x, y, cellColor);
+            let color = partyMode ? randomBrightColor() : cellColor;
+            if (lifeGrid.get(x, y) == true) fillCell(x, y, color);
         }
     }
 }
@@ -90,7 +93,7 @@ function multiGen(count, countLimit) {
             let dt = end - start;
             setTimeout(() => {
                 multiGen(count + 1, countLimit);
-            }, ANIMATION_DELAY - dt);
+            }, animationDelay - dt);
         });
     } else {
         animating = false;
@@ -129,7 +132,7 @@ nextXButton.addEventListener("mouseup", event => {
 let scaleButton = document.getElementById("scaleButton");
 scaleButton.addEventListener("mouseup", event => {
     if (!animating) {
-        let newScale = promptForNumber(`Enter a # for how many pixels-per-side each cell should have, between 1-32 (currently: ${cellSize})`);
+        let newScale = promptForNumber(`Enter a # for how many pixels-per-side each cell should have, between 1-32 (currently: ${cellSize}x${cellSize})`)
         if (newScale == null || newScale < 1 || newScale > 32) {
             alert("Invalid input!");
         } else {
@@ -139,6 +142,18 @@ scaleButton.addEventListener("mouseup", event => {
             animating = false;
             lifeGrid = new LifeGrid(cellsWide, cellsHigh);  
             populateCanvas();
+            updateGenLabel();
+        }
+    }
+});
+
+// Button to change the animation delay:
+let speedButton = document.getElementById("speedButton");
+speedButton.addEventListener("mouseup", event => {
+    if (!animating) {
+        let input = promptForNumber(`Enter a # for the new animation delay (currently: ${animationDelay}ms)`);
+        if (input != null) {
+            animationDelay = input;
         }
     }
 });
@@ -147,38 +162,52 @@ scaleButton.addEventListener("mouseup", event => {
 
 let changeBgButton = document.getElementById("changeBgButton");
 changeBgButton.addEventListener("mouseup", event => {
-    let r = promptForNumber("Enter RED rgb value between 0-255: ");
-    let g = promptForNumber("Enter GREEN rgb value between 0-255: ");
-    let b = promptForNumber("Enter BLUE rgb value between 0-255: ");
-    for (let num of [r, g, b]) {
-        if (num < 0 || num > 255) {
-            alert("Please enter values between 0-255");
-            return;
+    if (!animating && !partyMode) {
+        let r = promptForNumber("Enter RED rgb value between 0-255: ");
+        let g = promptForNumber("Enter GREEN rgb value between 0-255: ");
+        let b = promptForNumber("Enter BLUE rgb value between 0-255: ");
+        for (let num of [r, g, b]) {
+            if (num < 0 || num > 255) {
+                alert("Please enter values between 0-255");
+                return;
+            }
         }
+        bg_color = `rgb(${r}, ${g}, ${b})`;
+        populateCanvas();
     }
-    bg_color = `rgb(${r}, ${g}, ${b})`;
-    populateCanvas();
 });
 
 let changeFgButton = document.getElementById("changeFgButton");
 changeFgButton.addEventListener("mouseup", event => {
-    let r = promptForNumber("Enter RED rgb value between 0-255: ");
-    let g = promptForNumber("Enter GREEN rgb value between 0-255: ");
-    let b = promptForNumber("Enter BLUE rgb value between 0-255: ");
-    for (let num of [r, g, b]) {
-        if (num < 0 || num > 255) {
-            alert("Please enter values between 0-255");
-            return;
+    if (!animating && !partyMode) {
+        let r = promptForNumber("Enter RED rgb value between 0-255: ");
+        let g = promptForNumber("Enter GREEN rgb value between 0-255: ");
+        let b = promptForNumber("Enter BLUE rgb value between 0-255: ");
+        for (let num of [r, g, b]) {
+            if (num < 0 || num > 255) {
+                alert("Please enter values between 0-255");
+                return;
+            }
         }
+        cellColor = `rgb(${r}, ${g}, ${b})`;
+        populateCanvas();
     }
-    cellColor = `rgb(${r}, ${g}, ${b})`;
-    populateCanvas();
 });
 
-// Button to enable/disable manual cell toggling
+// Checkbox to enable/disable manual cell toggling:
 let manualToggle = document.getElementById("manualToggle");
 manualToggle.addEventListener("mouseup", event => {
     togglingEnabled = !togglingEnabled;
+});
+
+// Checkbox to enable/disable party mode:
+let partyToggle = document.getElementById("partyToggle");
+partyToggle.addEventListener("mouseup", event => {
+    partyMode = !partyMode;
+    bg_color = "black";
+    if (!animating) {
+        populateCanvas();
+    }
 });
 
 // Button to stop any current animations:
@@ -195,7 +224,7 @@ clearButton.addEventListener("mouseup", event => {
         lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, false, true);
         populateCanvas();
         updateGenLabel();
-    }, ANIMATION_DELAY);
+    }, animationDelay);
 });
 
 // Button to reset the grid:
@@ -206,7 +235,7 @@ resetButton.addEventListener("mouseup", event => {
         lifeGrid = new LifeGrid(lifeGrid.width, lifeGrid.height, true);
         populateCanvas();
         updateGenLabel();
-    }, ANIMATION_DELAY);
+    }, animationDelay);
 });
 
 /* Button to produce a fleet of gliders in formation, to endlessly fly across the grid.  */
@@ -247,7 +276,7 @@ gliderFleetButton.addEventListener("mouseup", event => {
         }
         populateCanvas();
         updateGenLabel();
-    }, ANIMATION_DELAY);
+    }, animationDelay);
 });
 
 /* Button to clear the grid and spawn 2 (for now) randomly-oriented gliders located 
@@ -289,7 +318,7 @@ duellingGlidersButton.addEventListener("mouseup", event => {
         }
         populateCanvas();
         updateGenLabel();
-    }, ANIMATION_DELAY);
+    }, animationDelay);
 });
 
 // Button to clear the grid and spawn a single glider gun:
@@ -337,6 +366,6 @@ gliderGunButton.addEventListener("mouseup", event => {
         lifeGrid.set(start.x + 35, start.y - 2, true); 
         populateCanvas();
         updateGenLabel();
-    }, ANIMATION_DELAY);
+    }, animationDelay);
 });
 

@@ -9,31 +9,36 @@
     <body>
 
         <!-- TODO: dynamic canvas size.  -->   
-        <canvas width=1250 height=600></canvas>
+        <canvas width=1250 height=570></canvas>
 
         <label id="manualToggle" style="color: white">
             <input type="checkbox"> Manual Toggling </input>
         </label>
+        <label id="partyToggle" style="color: white">
+            <input type="checkbox"> Party Mode </input>
+        </label>
+        <label id="stonesToggle" style="color: white"> <!-- TODO  -->
+            <input type="checkbox"> Stones </input>
+        </label>
  
         <label id="generationLabel" style="color: white"> | Generation: 0 </label>
 
-        <button id="gliderGunButton"> Glider Gun! </button>
-        <button id="duellingGlidersButton"> Duelling Gliders! </button>
-        <button id="gliderFleetButton"> Glider Fleet! </button>
-
-        <button id="resetButton" type="submit"> Reset </button>
         <button id="clearButton" type="submit"> Clear </button>
         <button id="stopButton" type="submit"> Stop </button>
         <button id="playButton" type="submit"> Play </button>
-
         <button id="nextButton" type="submit"> Next 1 </button>
         <button id="nextXButton" type="submit"> Next X </button>
+        <br>
+
+        <button id="resetButton" type="submit"> Reset </button>
+        <button id="gliderGunButton"> Glider Gun! </button>
+        <button id="duellingGlidersButton"> Duelling Gliders! </button>
+        <button id="gliderFleetButton"> Glider Fleet! </button>
+        <br>
 
         <button id="changeBgButton" type="submit"> BG Color </button>
         <button id="changeFgButton" type="submit"> FG Color </button>
-
         <button id="scaleButton" type="submit"> Scale </button>
-
         <button id="speedButton" type="submit"> Speed </button>
 
         <script type="module" src="main.mjs"></script>
