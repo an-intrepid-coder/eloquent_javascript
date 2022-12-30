@@ -1,7 +1,5 @@
 # TODO list for web-based Conway's Game of Life (in no particular order):
 
-* Go board mode (brown base w/ black lines and white/black stones)
-
 * Dynamic initial canvas size based on user's screen
 
 * FINISH Glider Fleet: It should loop over #cells dynamically and randomly on/off each glider-size square of cells w/ buffer (so 5x5 cells per super-cell)
@@ -24,4 +22,5 @@
 # BUGS:
 
 * Handle cancelled prompts more cleanly
+* Switch some of the checkboxes to custom buttons which behave more consistently in edge cases.
 

@@ -3,7 +3,7 @@
 
 import {randInRange, randomIndex, promptForNumber, randomBrightColor} from "./modules/utility.mjs";
 import {LifeGrid} from "./modules/lifeGrid.mjs";
-import {ANIMATION_DELAY} from "./modules/constants.mjs";
+import {ANIMATION_DELAY, LIGHT_BROWN} from "./modules/constants.mjs";
 
 // canvas:
 let canvas = document.querySelector("canvas");
@@ -17,6 +17,7 @@ let cellsWide = Math.floor(canvas.width / cellSize);
 // Cell grid colors: 
 let partyMode = false;
 let stonesMode = false;
+let goMode = false;
 let bg_color = "black";
 let cellColor = randomBrightColor();
 
@@ -51,12 +52,17 @@ function fillBackground(color) {
 }
 
 // Fills in a given cell with the given color:
-function fillCell(x, y, color) {
-    if (stonesMode) {
+function fillCell(x, y, color, circle = false) {
+    if (circle) {
+        let goCellSize = cellSize - 3;
+        let origin = {x: Math.floor(x * cellSize + cellSize / 2), y: Math.floor(y * cellSize + cellSize / 2)};
         context.fillStyle = color;
         context.beginPath();
-        context.arc(x * cellSize, y * cellSize, cellSize / 2, 0, Math.PI * 2);
-        //context.stroke();
+        if (goMode) {
+            context.arc(origin.x, origin.y, goCellSize / 2, 0, Math.PI * 2);
+        } else {
+            context.arc(origin.x, origin.y, cellSize / 2, 0, Math.PI * 2);
+        }
         context.fill();
     } else {
         context.fillStyle = color;
@@ -66,11 +72,40 @@ function fillCell(x, y, color) {
 
 // Populate canvas from lifeGrid:  
 function populateCanvas() {
-    fillBackground(bg_color);
-    for (let y = 0; y < cellsHigh; y++) {
+    if (goMode) {
+        fillBackground(LIGHT_BROWN);
+        context.fillStyle = "black";
+        context.lineWidth = 1;
+        for (let y = 0; y < cellsHigh; y++) {
+            let ty = y * cellSize + cellSize / 2;
+            context.beginPath();
+            context.moveTo(0, ty);
+            context.lineTo(canvas.width - 1, ty);
+            context.stroke(); 
+        }
         for (let x = 0; x < cellsWide; x++) {
-            let color = partyMode ? randomBrightColor() : cellColor;
-            if (lifeGrid.get(x, y) == true) fillCell(x, y, color);
+            let tx = x * cellSize + cellSize / 2;
+            context.beginPath();
+            context.moveTo(tx, 0);
+            context.lineTo(tx, canvas.height - 1);
+            context.stroke(); 
+        }
+        for (let y = 0; y < cellsHigh; y++) {
+            for (let x = 0; x < cellsWide; x++) {
+                if (lifeGrid.get(x, y) == true) {
+                    fillCell(x, y, "white", true);
+                } else {
+                    fillCell(x, y, "black", true);
+                }
+            }
+        }
+    } else {
+        fillBackground(bg_color);
+        for (let y = 0; y < cellsHigh; y++) {
+            for (let x = 0; x < cellsWide; x++) {
+                let color = partyMode ? randomBrightColor() : cellColor;
+                if (lifeGrid.get(x, y) == true) fillCell(x, y, color, stonesMode); // TODO: add shape in here
+            }
         }
     }
 }
@@ -225,6 +260,19 @@ stonesToggle.addEventListener("mouseup", event => {
     stonesMode = !stonesMode;
     if (!animating) {
         populateCanvas();
+    }
+});
+
+// Checkbox to toggle Go Board mode:
+let goToggle = document.getElementById("goToggle");
+goToggle.addEventListener("mouseup", event => {
+    if (cellSize < 4) {
+        alert("Cell size should be at least 4x4px for this display mode. But I would recommend 8x8px or higher. Use other display modes for very small ((such as 1x1 and 2x2) cell sizes.");
+    } else {
+        goMode = !goMode;
+        if (!animating) {
+            populateCanvas();
+        }
     }
 });
 
