@@ -1,22 +1,22 @@
 /* Conway's Game of Life exercise from Chapter 18 (page 330) of Eloquent JavaScript. I just took the
    exercise and ran with it here, and now it's a whole project of its own.  */
 
-import {randInRange, randomIndex, promptForNumber} from "./modules/utility.mjs";
+import {randInRange, randomIndex, promptForNumber, randomBrightColor} from "./modules/utility.mjs";
 import {LifeGrid} from "./modules/lifeGrid.mjs";
-import {ANIMATION_DELAY, LIGHT_GREEN} from "./modules/constants.mjs";
+import {ANIMATION_DELAY} from "./modules/constants.mjs";
 
 // canvas:
 let canvas = document.querySelector("canvas");
 let context = canvas.getContext("2d");
 
-// Cell grid dimensions (TODO: let the user adjust it by zooming)
-let cellSize = 4;
+// Cell grid dimensions 
+let cellSize = 16;
 let cellsHigh = Math.floor(canvas.height / cellSize);
 let cellsWide = Math.floor(canvas.width / cellSize);
 
-// Cell grid colors: (TODO: let user adjust)
+// Cell grid colors: 
 let bg_color = "black";
-let cellColor = LIGHT_GREEN;
+let cellColor = randomBrightColor();
 
 let animating = false;
 
@@ -63,7 +63,7 @@ function populateCanvas() {
     }
 }
 
-// Populate the DOM initially:
+// Populate the canvas initially:
 populateCanvas();
 
 // Update the text label with the current generation on it:
@@ -121,6 +121,24 @@ nextXButton.addEventListener("mouseup", event => {
         if (gens != null) {
             animating = true;
             multiGen(1, gens); 
+        }
+    }
+});
+
+// Button to change pixels-per-cell Scale:
+let scaleButton = document.getElementById("scaleButton");
+scaleButton.addEventListener("mouseup", event => {
+    if (!animating) {
+        let newScale = promptForNumber(`Enter a # for how many pixels-per-side each cell should have, between 1-32 (currently: ${cellSize})`);
+        if (newScale == null || newScale < 1 || newScale > 32) {
+            alert("Invalid input!");
+        } else {
+            cellSize = newScale;
+            cellsHigh = Math.floor(canvas.height / cellSize);
+            cellsWide = Math.floor(canvas.width / cellSize);
+            animating = false;
+            lifeGrid = new LifeGrid(cellsWide, cellsHigh);  
+            populateCanvas();
         }
     }
 });

@@ -18,3 +18,18 @@ export function promptForNumber(promptString) {
     return input;
 }
 
+export function randomBrightColor() {
+    let brightColors = [
+        "rgb(0, 255, 0)",
+        "rgb(0, 0, 255)",
+        "rgb(255, 0, 0)",
+        "rgb(255, 255, 0)",
+        "rgb(0, 255, 255)",
+        "rgb(252, 168, 3)",
+        "rgb(255, 255, 255)",
+        "rgb(252, 3, 232)",
+        "rgb(3, 252, 94)",
+    ];
+    return randomIndex(brightColors);
+}
+

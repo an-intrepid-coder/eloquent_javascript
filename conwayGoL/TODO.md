@@ -3,8 +3,8 @@
 * Zoomable/Scaleable buttons
 * Speed slider buttons
 
-* Party mode
-* Stones mode
+* Party toggle
+* Stones toggle
 
 * FINISH Glider Fleet: It should loop over #cells dynamically and randomly on/off each glider-size square of cells w/ buffer (so 5x5 cells per super-cell)
 
