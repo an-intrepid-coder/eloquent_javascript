@@ -10,19 +10,20 @@ let canvas = document.querySelector("canvas");
 let context = canvas.getContext("2d");
 
 // Cell grid dimensions 
-let cellSize = 16;
+let cellSize = 20;
 let cellsHigh = Math.floor(canvas.height / cellSize);
 let cellsWide = Math.floor(canvas.width / cellSize);
 
 // Cell grid colors: 
 let partyMode = false;
+let stonesMode = false;
 let bg_color = "black";
 let cellColor = randomBrightColor();
 
 let animationDelay = ANIMATION_DELAY;
 let animating = false;
 
-let togglingEnabled = false;
+let togglingEnabled = true;
 
 // Generate grid:
 let lifeGrid = new LifeGrid(cellsWide, cellsHigh);  
@@ -51,8 +52,16 @@ function fillBackground(color) {
 
 // Fills in a given cell with the given color:
 function fillCell(x, y, color) {
-    context.fillStyle = color;
-    context.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+    if (stonesMode) {
+        context.fillStyle = color;
+        context.beginPath();
+        context.arc(x * cellSize, y * cellSize, cellSize / 2, 0, Math.PI * 2);
+        //context.stroke();
+        context.fill();
+    } else {
+        context.fillStyle = color;
+        context.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+    }
 }
 
 // Populate canvas from lifeGrid:  
@@ -205,6 +214,15 @@ let partyToggle = document.getElementById("partyToggle");
 partyToggle.addEventListener("mouseup", event => {
     partyMode = !partyMode;
     bg_color = "black";
+    if (!animating) {
+        populateCanvas();
+    }
+});
+
+// Checkbox to enable/disable stones mode:
+let stonesToggle = document.getElementById("stonesToggle");
+stonesToggle.addEventListener("mouseup", event => {
+    stonesMode = !stonesMode;
     if (!animating) {
         populateCanvas();
     }
