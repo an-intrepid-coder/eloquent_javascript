@@ -18,6 +18,29 @@ export class LifeGrid {
         }
     }
 
+    // Returns a lifeGrid based on a state object:
+    static fromStateObject(stateObject) { 
+        let lifeGrid = new LifeGrid(stateObject.generation, stateObject.width, stateObject.height, stateObject.cells, false, true);
+        for (let y = 0; y < lifeGrid.height; y++) {
+            for (let x = 0; x < lifeGrid.width; x++) {
+                if (stateObject.cells[y * lifeGrid.width + x]) {
+                    lifeGrid.set(x, y, true);
+                }
+            }
+        }
+        return lifeGrid;
+    }
+
+    // Returns an object representing the state of the simulation:
+    stateObject() { 
+        return {
+            generation: this.generation,
+            width: this.width,
+            height: this.height,
+            cells: this.cells
+        };
+    }
+
     // Gets the given cell:                
     get(x, y) {
         if (y >= 0 && y < this.height && x >= 0 && x < this.width) {

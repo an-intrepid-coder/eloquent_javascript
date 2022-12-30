@@ -1,4 +1,4 @@
 # CONWAY'S GAME OF LIFE 
 
-**Description:** There is an exercise on page 330 of *Eloquent JavScript* to make Conway's Game of Life using just checkboxes. This is my solution for that exercise, and a lot of stuff built on it. In progress.
+**Description:** The exercise on page 330 of *Eloquent JavaScript* asks the user to make Conway's Game of Life using checkboxes. This is a neat exercise, and I chosen to make it a centerpiece project that ties together lessons from the book and go beyond the requirements of the exercise (for example, among many other things, it now uses the canvas instead of checkboxes for the cell grid). There are a lot of things I plan on doing with this one.
 

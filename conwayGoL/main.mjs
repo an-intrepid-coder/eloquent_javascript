@@ -29,7 +29,7 @@ let animating = false;
 let togglingEnabled = true;
 
 // Generate grid:
-let lifeGrid = new LifeGrid(cellsWide, cellsHigh);  
+let lifeGrid = new LifeGrid(cellsWide, cellsHigh);
 
 // Canvas functions:
 
@@ -106,7 +106,7 @@ function populateCanvas() {
         for (let y = 0; y < cellsHigh; y++) {
             for (let x = 0; x < cellsWide; x++) {
                 let color = partyMode ? randomBrightColor() : cellColor;
-                if (lifeGrid.get(x, y) == true) fillCell(x, y, color, stonesMode); // TODO: add shape in here
+                if (lifeGrid.get(x, y) == true) fillCell(x, y, color, stonesMode); 
             }
         }
     }
@@ -195,7 +195,7 @@ scaleButton.addEventListener("mouseup", event => {
         } else {
             reScale(newScale);
             animating = false;
-            lifeGrid = new LifeGrid(cellsWide, cellsHigh);  
+            lifeGrid = new LifeGrid(cellsWide, cellsHigh);
             populateCanvas();
             updateGenLabel();
         }
