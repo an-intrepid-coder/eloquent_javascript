@@ -1,45 +1,14 @@
 <!doctype html>
 
-<style>
-    body {
-        background: black;
-        text-align: center;
-    }
-    p {
-        background: black;
-        color: white;
-        width: 50%;
-    }
-    ol {
-        background: black;
-        color: white;
-        width: 47%;
-    }
-    a {
-        color: yellow;
-    }
-    .about {
-        position: absolute;
-        top: 0;
-        left: 30%;
-        z-index: 1;
-    }
-    canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -1;
-    }
-</style>
-
 <html>
     <head>
         <meta charset="utf-8">
         <title>Conway's Game of Life</title>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <div id="display">
-            <canvas></canvas> <!-- this will show up BEHIND the text, right?  -->
+            <canvas id="backgroundCanvas"></canvas> 
             <div id="about">
                 <p>
                     Conway's Game of Life plays out on a grid (in this case determined by the size of the user's screen). Each cell is either alive or dead. Every turn, a few rules are applied to each cell in the grid:

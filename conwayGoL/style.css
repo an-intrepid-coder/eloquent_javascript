@@ -1,6 +1,39 @@
-/* TODO: Master style sheet for the whole thing  */
-
 body {
     background-color: black;
+    text-align: center;
+}
+
+label {
+    color: white;
+}
+
+p {
+    background: black;
+    color: white;
+    width: 50%;
+}
+
+ol {
+    background: black;
+    color: white;
+    width: 47%;
+}
+
+a {
+    color: yellow;
+}
+
+.about {
+    position: absolute;
+    top: 0;
+    left: 30%;
+    z-index: 1;
+}
+
+#backgroundCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
 
