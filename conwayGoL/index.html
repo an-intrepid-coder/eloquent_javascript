@@ -6,14 +6,29 @@
         text-align: center;
     }
     p {
-        background: white;
-        color: black;
+        background: black;
+        color: white;
         width: 50%;
     }
     ol {
-        background: white;
-        color: black;
+        background: black;
+        color: white;
         width: 47%;
+    }
+    a {
+        color: yellow;
+    }
+    .about {
+        position: absolute;
+        top: 0;
+        left: 30%;
+        z-index: 1;
+    }
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
     }
 </style>
 
@@ -23,37 +38,41 @@
         <title>Conway's Game of Life</title>
     </head>
     <body>
-        <div id="about" height=600 width=600>
-            <p>
-                Conway's Game of Life plays out on a grid (in this case determined by the size of the user's screen). Each cell is either alive or dead. Every turn, a few rules are applied to each cell in the grid:
-            <ol>
-                <li> Any cell with fewer than two or more than three neighbors dies. </li>
-                <li> Any live cell with two or three neighbors lives on. </li>
-                <li> Any dead cell with exactly three neighbors becomes alive. </li>
-            </ol>
-            </p>
-            <p>
-                <a href="conwayGoL.html">Continue to Conway's Game of Life</a>
-            </p>
-            <p> 
-                Or, read on:
-            </p>
-            <p>
-                This started as a textbook exercise from <a href=https://eloquentjavascript.net/>Eloquent JavaScript</a> which asks the reader to implement Conway's Game of Life using checkboxes, but it has since expanded in scope. By this point it's not using checkboxes anymore but is based on the canvas. 
-            </p>
-            <p>
-                Each cell can be toggled on/off if the user clicks on it. I have also implemented a few buttons which set the board up in interesting ways, as well as some buttons which do interesting things like "Party Mode" (which causes the pieces to all flash random bright colors), Stones Mode (which changes the alive cells from squares to circles), and Go Mode (which uses the canvas to make it look like a Go Board with black and white stones).
-            </p>
-            <p>
-                The user can reset/clear the board at any time, pause/stop the simulation, advance it by a single generation at a time or by an arbitrary number of generations, change the speed of the simulation and animation, and also change the scale of the display and simulation by entering how many pixels on a side each cell should have. The user can also change the color of the foreground (live cells) and background (dead cells) on the grid. 
-            </p>
-            <p>
-                Note that many of the buttons are set to not work if the simulation is running, so press "stop" before you use most of them. The checkboxes for toggling are also a little buggy still, and I will probably replace them with custom buttons in the near future. Refreshing the page will reset the simulation. If you re-size the screen you can re-size the canvas by refreshing the page. It's still a work in progress, but enjoy!
-            </p>
-            <p>
-                For those interested in the source code, it is all visible in the browser by viewing the page source. Note that because of technical reasons around the hosting service the code has been re-organized from the modular approach I used when writing it initially. To view the code in a (slightly) more organized and approachable state, <a href="https://github.com/an-intrepid-coder/eloquent_javascript/tree/main/conwayGoL">you can view the project on my GitHub here.</a>
-            </p>
+        <div id="display">
+            <canvas></canvas> <!-- this will show up BEHIND the text, right?  -->
+            <div id="about">
+                <p>
+                    Conway's Game of Life plays out on a grid (in this case determined by the size of the user's screen). Each cell is either alive or dead. Every turn, a few rules are applied to each cell in the grid:
+                <ol>
+                    <li> Any cell with fewer than two or more than three neighbors dies. </li>
+                    <li> Any live cell with two or three neighbors lives on. </li>
+                    <li> Any dead cell with exactly three neighbors becomes alive. </li>
+                </ol>
+                </p>
+                <p>
+                    <a href="conwayGoL.html">Continue to Conway's Game of Life</a>
+                </p>
+                <p> 
+                    Or, read on:
+                </p>
+                <p>
+                    This started as a textbook exercise from <a href=https://eloquentjavascript.net/>Eloquent JavaScript</a> which asks the reader to implement Conway's Game of Life using checkboxes, but it has since expanded in scope. By this point it's not using checkboxes anymore but is based on the canvas. 
+                </p>
+                <p>
+                    Each cell can be toggled on/off if the user clicks on it. I have also implemented a few buttons which set the board up in interesting ways, as well as some buttons which do interesting things like "Party Mode" (which causes the pieces to all flash random bright colors), Stones Mode (which changes the alive cells from squares to circles), and Go Mode (which uses the canvas to make it look like a Go Board with black and white stones).
+                </p>
+                <p>
+                    The user can reset/clear the board at any time, pause/stop the simulation, advance it by a single generation at a time or by an arbitrary number of generations, change the speed of the simulation and animation, and also change the scale of the display and simulation by entering how many pixels on a side each cell should have. The user can also change the color of the foreground (live cells) and background (dead cells) on the grid. 
+                </p>
+                <p>
+                    Note that many of the buttons are set to not work if the simulation is running, so press "stop" before you use most of them. The checkboxes for toggling are also a little buggy still, and I will probably replace them with custom buttons in the near future. Refreshing the page will reset the simulation. If you re-size the screen you can re-size the canvas by refreshing the page. It's still a work in progress, but enjoy!
+                </p>
+                <p>
+                    For those interested in the source code, it is all visible in the browser by viewing the page source. Note that because of technical reasons around the hosting service the code has been re-organized from the modular approach I used when writing it initially. To view the code in a (slightly) more organized and approachable state, <a href="https://github.com/an-intrepid-coder/eloquent_javascript/tree/main/conwayGoL">you can view the project on my GitHub here.</a>
+                </p>
+            </div>
         </div>
+        <script type="module" src="indexScript.mjs"></script>
     </body>
 </html>
 
