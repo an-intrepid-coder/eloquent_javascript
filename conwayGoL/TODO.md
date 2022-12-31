@@ -2,7 +2,6 @@
 
 * Set/Save seeds 
 * Back/Reverse functionality/buttons
-
 * color picker instead of calls to prompt() for BG/FG Color buttons
 * Sliders for speed/scale instead of buttons
 * click-and-drag toggling of multiple cells
@@ -13,6 +12,7 @@
 * Make into a proper web page using later book projects as a template
 * A little more styling.
 * auto-detect when the sim is at or close to its finished state (including checks for long-period oscillators)
+* Make a fancy animation in the background of the index.html page (maybe a fleet of gliders behind the text)
 
 # BUGS:
 

@@ -1,50 +1,59 @@
 <!doctype html>
 
+<style>
+    body {
+        background: black;
+        text-align: center;
+    }
+    p {
+        background: white;
+        color: black;
+        width: 50%;
+    }
+    ol {
+        background: white;
+        color: black;
+        width: 47%;
+    }
+</style>
+
 <html>
     <head>
         <meta charset="utf-8">
         <title>Conway's Game of Life</title>
-        <link rel="stylesheet" href="style.css">
     </head>
     <body>
-
-        <canvas></canvas>
-        <br>
-
-        <label id="manualToggle" style="color: white">
-            <input type="checkbox" checked="true"> Manual Toggling </input>
-        </label>
-        <label id="partyToggle" style="color: white">
-            <input type="checkbox"> Party Mode </input>
-        </label>
-        <label id="stonesToggle" style="color: white"> 
-            <input type="checkbox"> Stones </input>
-        </label>
-        <label id="goToggle" style="color: white"> 
-            <input type="checkbox"> Go Mode </input>
-        </label>
- 
-        <label id="generationLabel" style="color: white"> | Generation: 0 </label>
-
-        <button id="clearButton" type="submit"> Clear </button>
-        <button id="stopButton" type="submit"> Stop </button>
-        <button id="playButton" type="submit"> Play </button>
-        <button id="nextButton" type="submit"> Next 1 </button>
-        <button id="nextXButton" type="submit"> Next X </button>
-        <br>
-
-        <button id="resetButton" type="submit"> Reset </button>
-        <button id="gliderGunButton"> Glider Gun! </button>
-        <button id="duellingGlidersButton"> Duelling Gliders! </button>
-        <button id="gliderFleetButton"> Glider Fleet! </button>
-        <br>
-
-        <button id="changeBgButton" type="submit"> BG Color </button>
-        <button id="changeFgButton" type="submit"> FG Color </button>
-        <button id="scaleButton" type="submit"> Scale </button>
-        <button id="speedButton" type="submit"> Speed </button>
-
-        <script type="module" src="main.mjs"></script>
+        <div id="about" height=600 width=600>
+            <p>
+                Conway's Game of Life plays out on a grid (in this case determined by the size of the user's screen). Each cell is either alive or dead. Every turn, a few rules are applied to each cell in the grid:
+            <ol>
+                <li> Any cell with fewer than two or more than three neighbors dies. </li>
+                <li> Any live cell with two or three neighbors lives on. </li>
+                <li> Any dead cell with exactly three neighbors becomes alive. </li>
+            </ol>
+            </p>
+            <p>
+                <a href="conwayGoL.html">Continue to Conway's Game of Life</a>
+            </p>
+            <p> 
+                Or, read on:
+            </p>
+            <p>
+                This started as a textbook exercise from <a href=https://eloquentjavascript.net/>Eloquent JavaScript</a> which asks the reader to implement Conway's Game of Life using checkboxes, but it has since expanded in scope. By this point it's not using checkboxes anymore but is based on the canvas. 
+            </p>
+            <p>
+                Each cell can be toggled on/off if the user clicks on it. I have also implemented a few buttons which set the board up in interesting ways, as well as some buttons which do interesting things like "Party Mode" (which causes the pieces to all flash random bright colors), Stones Mode (which changes the alive cells from squares to circles), and Go Mode (which uses the canvas to make it look like a Go Board with black and white stones).
+            </p>
+            <p>
+                The user can reset/clear the board at any time, pause/stop the simulation, advance it by a single generation at a time or by an arbitrary number of generations, change the speed of the simulation and animation, and also change the scale of the display and simulation by entering how many pixels on a side each cell should have. The user can also change the color of the foreground (live cells) and background (dead cells) on the grid. 
+            </p>
+            <p>
+                Note that many of the buttons are set to not work if the simulation is running, so press "stop" before you use most of them. The checkboxes for toggling are also a little buggy still, and I will probably replace them with custom buttons in the near future. Refreshing the page will reset the simulation. If you re-size the screen you can re-size the canvas by refreshing the page. It's still a work in progress, but enjoy!
+            </p>
+            <p>
+                For those interested in the source code, it is all visible in the browser by viewing the page source. Note that because of technical reasons around the hosting service the code has been re-organized from the modular approach I used when writing it initially. To view the code in a (slightly) more organized and approachable state, <a href="https://github.com/an-intrepid-coder/eloquent_javascript/tree/main/conwayGoL">you can view the project on my GitHub here.</a>
+            </p>
+        </div>
     </body>
 </html>
 
