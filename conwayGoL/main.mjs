@@ -16,7 +16,7 @@ let bundle = {
     animating: false,
     animationDelay: ANIMATION_DELAY,
     partyMode: false,
-    cellSize: 16,
+    cellSize: CELL_SIZE,
     cellsWide: Math.floor(canvas.width / CELL_SIZE),
     cellsHigh: Math.floor(canvas.height / CELL_SIZE),
     canvas: canvas,

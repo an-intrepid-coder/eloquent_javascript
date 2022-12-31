@@ -195,6 +195,7 @@ export class LifeGrid {
             this.set(cell.x, cell.y, true);
         }
     }
-
+    ////
+        
 }
 
