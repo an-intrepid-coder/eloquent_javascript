@@ -1,5 +1,5 @@
 import {LifeGrid} from "./modules/lifeGrid.mjs";
-import {INDEX_CELL_SIZE} from "./modules/constants.mjs";
+import {INDEX_CELL_SIZE, INDEX_ANIMATION_DELAY} from "./modules/constants.mjs";
 import {populateCanvas, multiGen} from "./modules/canvasFunctions.mjs";
 import {randomBrightColor} from "./modules/utility.mjs";
 
@@ -12,7 +12,7 @@ let context = canvas.getContext("2d");
 // App and display information bundled for pass-by-reference convenience:
 let bundle = {
     animating: true,
-    animationDelay: 300,
+    animationDelay: INDEX_ANIMATION_DELAY,
     partyMode: false,
     cellSize: INDEX_CELL_SIZE,
     cellsWide: Math.floor(canvas.width / INDEX_CELL_SIZE),
@@ -20,7 +20,7 @@ let bundle = {
     canvas: canvas,
     context: context,
     lifeGrid: new LifeGrid(Math.floor(canvas.width / INDEX_CELL_SIZE), Math.floor(canvas.height / INDEX_CELL_SIZE)),
-    goMode: false,
+    goMode: true,
     stonesMode: false,
     bg_color: "black",
     cellColor: randomBrightColor(),
