@@ -3,7 +3,7 @@
 import {randInRange, randomIndex, promptForNumber, randomBrightColor} from "./modules/utility.mjs";
 import {LifeGrid} from "./modules/lifeGrid.mjs";
 import {ANIMATION_DELAY, CELL_SIZE} from "./modules/constants.mjs";
-import {populateCanvas, advanceGen, multiGen} from "./modules/canvasFunctions.mjs";
+import {populateCanvas, advanceGen, multiGen, updateGenLabel} from "./modules/canvasFunctions.mjs";
 
 // canvas:
 let canvas = document.querySelector("canvas");
@@ -46,13 +46,6 @@ canvas.addEventListener("mouseup", event => {
 // Populate the canvas initially:
 populateCanvas(bundle);
 
-// Update the text label with the current generation on it:
-function updateGenLabel() {
-    let generationLabel = document.getElementById("generationLabel");
-    generationLabel.textContent = `| Generation ${bundle.lifeGrid.generation}`;
-    generationLabel.style = "color: white";
-}
-
 // Buttons to advance generations:
 
 let playButton = document.getElementById("playButton");
@@ -60,7 +53,6 @@ playButton.addEventListener("mouseup", event => {
     if (!bundle.animating) {
         bundle.animating = true;
         multiGen(bundle, 1, Infinity);
-        updateGenLabel();
     }
 });
 
@@ -68,7 +60,7 @@ let nextButton = document.getElementById("nextButton");
 nextButton.addEventListener("mouseup", event => {
     if (!bundle.animating) {
         advanceGen(bundle);
-        updateGenLabel();
+        updateGenLabel(bundle);
     }
 });
 
@@ -79,7 +71,7 @@ nextXButton.addEventListener("mouseup", event => {
         if (gens != null) {
             bundle.animating = true;
             multiGen(bundle, 1, gens); 
-            updateGenLabel();
+            updateGenLabel(bundle);
         }
     }
 });
@@ -107,7 +99,7 @@ scaleButton.addEventListener("mouseup", event => {
             bundle.animating = false;
             bundle.lifeGrid = new LifeGrid(bundle.cellsWide, bundle.cellsHigh);
             populateCanvas(bundle);
-            updateGenLabel();
+            updateGenLabel(bundle);
         }
     }
 });
@@ -210,7 +202,7 @@ clearButton.addEventListener("mouseup", event => {
     setTimeout(() => {
         bundle.lifeGrid = new LifeGrid(bundle.lifeGrid.width, bundle.lifeGrid.height, false, true);
         populateCanvas(bundle);
-        updateGenLabel();
+        updateGenLabel(bundle);
     }, bundle.animationDelay);
 });
 
@@ -222,7 +214,7 @@ resetButton.addEventListener("mouseup", event => {
         reScale(bundle.cellSize);
         bundle.lifeGrid = new LifeGrid(bundle.lifeGrid.width, bundle.lifeGrid.height, true);
         populateCanvas(bundle);
-        updateGenLabel();
+        updateGenLabel(bundle);
     }, bundle.animationDelay);
 });
 
@@ -245,7 +237,7 @@ gliderFleetButton.addEventListener("mouseup", event => {
             }
         }
         populateCanvas(bundle);
-        updateGenLabel();
+        updateGenLabel(bundle);
     }, bundle.animationDelay);
 });
 
@@ -255,39 +247,28 @@ let duellingGlidersButton = document.getElementById("duellingGlidersButton");
 duellingGlidersButton.addEventListener("mouseup", event => {
     bundle.animating = false;
     setTimeout(() => {
-        function getStartingPoints() {
-            let points = [];
-            let candidates = [
-                // northwest quadrant:
-                {x: randInRange(3, bundle.lifeGrid.width / 2 - 3),  
-                 y: randInRange(3, bundle.lifeGrid.height / 2 - 3)},
-                // northeast quadrant:
-                {x: randInRange(bundle.lifeGrid.width / 2 + 3, bundle.lifeGrid.width - 3),  
-                 y: randInRange(3, bundle.lifeGrid.height / 2 - 3)},
-                // southwest quadrant:
-                {x: randInRange(3, bundle.lifeGrid.width / 2 - 3),
-                 y: randInRange(bundle.lifeGrid.height / 2 + 3, bundle.lifeGrid.height - 3)},
-                // southeast quadrant:
-                {x: randInRange(bundle.lifeGrid.width / 2 + 3, bundle.lifeGrid.width - 3),  
-                 y: randInRange(bundle.lifeGrid.height / 2 + 3, bundle.lifeGrid.height - 3)},
-            ];
-            for (let i = 0; i < 2; i++) { 
-                let candidate = randomIndex(candidates);
-                candidates = candidates.filter(x => x != candidate);
-                points.push(candidate);
-            }
-            return points;
-        }
-
         bundle.lifeGrid = new LifeGrid(bundle.lifeGrid.width, bundle.lifeGrid.height, false, true);
         let orientations = ["north", "south", "east", "west"];
-        let points = getStartingPoints();
-        for (let point of points) { 
+        let superCellSize = 5;
+        let superCellsWide = Math.floor(bundle.cellsWide / superCellSize);
+        let superCellsHigh = Math.floor(bundle.cellsHigh / superCellSize);
+        let availableSuperCells = [];
+        for (let y = 0; y < superCellsHigh; y++) {
+            for (let x = 0; x < superCellsWide; x++) {
+                availableSuperCells.push({x: x, y: y});
+            }
+        }
+        let numGliders = 2; // for now
+        for (let i = 0; i < numGliders; i++) {
             let orientation = randomIndex(orientations);
-            bundle.lifeGrid.stampGlider(point, orientation);
+            let configuration = Math.floor(Math.random() * 2);
+            let gliderOrigin = randomIndex(availableSuperCells);
+            availableSuperCells = availableSuperCells.filter(cell => !(cell.x === gliderOrigin.x && cell.y === gliderOrigin.y));
+            gliderOrigin = {x: gliderOrigin.x * superCellSize + 1, y: gliderOrigin.y + superCellSize + 1};
+            bundle.lifeGrid.stampGlider(gliderOrigin, orientation, configuration);
         }
         populateCanvas(bundle);
-        updateGenLabel();
+        updateGenLabel(bundle);
     }, bundle.animationDelay);
 });
 
@@ -335,7 +316,7 @@ gliderGunButton.addEventListener("mouseup", event => {
         bundle.lifeGrid.set(start.x + 35, start.y - 1, true); 
         bundle.lifeGrid.set(start.x + 35, start.y - 2, true); 
         populateCanvas(bundle);
-        updateGenLabel();
+        updateGenLabel(bundle);
     }, bundle.animationDelay);
 });
 

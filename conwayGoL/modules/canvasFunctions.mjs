@@ -8,7 +8,7 @@ function fillBackground(canvas, context, color) {
 }
 
 // Fills in a given cell with the given color:
-function fillCell(context, cellSize, x, y, color, circle = false) {
+function fillCell(context, cellSize, x, y, color, circle = false, goMode = false) {
     if (circle) {
         let origin = {x: Math.floor(x * cellSize + cellSize / 2), y: Math.floor(y * cellSize + cellSize / 2)};
         context.fillStyle = color;
@@ -36,7 +36,7 @@ export function populateCanvas(bundle) {
             let ty = y * bundle.cellSize + bundle.cellSize / 2;
             bundle.context.beginPath();
             bundle.context.moveTo(0, ty);
-            bundle.context.lineTo(canvas.width - 1, ty);
+            bundle.context.lineTo(bundle.canvas.width - 1, ty);
             bundle.context.stroke(); 
         }
         for (let x = 0; x < bundle.cellsWide; x++) {
@@ -49,9 +49,9 @@ export function populateCanvas(bundle) {
         for (let y = 0; y < bundle.cellsHigh; y++) {
             for (let x = 0; x < bundle.cellsWide; x++) {
                 if (bundle.lifeGrid.get(x, y) == true) {
-                    fillCell(bundle.context, bundle.cellSize, x, y, "white", true);
+                    fillCell(bundle.context, bundle.cellSize, x, y, "white", true, true);
                 } else {
-                    fillCell(bundle.context, bundle.cellSize, x, y, "black", true);
+                    fillCell(bundle.context, bundle.cellSize, x, y, "black", true, true);
                 }
             }
         }
@@ -66,22 +66,32 @@ export function populateCanvas(bundle) {
     }
 }
 
+// Update the text label with the current generation on it:
+export function updateGenLabel(bundle) {
+    let generationLabel = document.getElementById("generationLabel");
+    generationLabel.textContent = `| Generation ${bundle.lifeGrid.generation}`;
+    generationLabel.style = "color: white";
+}
+
 // Advance the simulation by 1 generation, populate the canvas, and update the gen label:
-export function advanceGen(bundle) {
+export function advanceGen(bundle, main) {
     bundle.lifeGrid = bundle.lifeGrid.nextLifeGen();
     populateCanvas(bundle);
+    if (main) {
+        updateGenLabel(bundle);
+    }
 }
 
 // Applies advanceGen() a given number of times:
-export function multiGen(bundle, count, countLimit) { 
+export function multiGen(bundle, count, countLimit, main = true) { 
     let start = Date.now();
-    advanceGen(bundle);
+    advanceGen(bundle, main);
     if (count < countLimit && bundle.animating) {
         requestAnimationFrame(_ => {
             let end = Date.now();
             let dt = end - start;
             setTimeout(() => {
-                multiGen(bundle, count + 1, countLimit);
+                multiGen(bundle, count + 1, countLimit, main);
             }, bundle.animationDelay - dt);
         });
     } else {
